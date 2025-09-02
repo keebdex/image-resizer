@@ -23,7 +23,7 @@ uv pip install Pillow
 
 ### How to Use
 
-1.  **Save the Script:** Save the Python code as a file named `resize_images.py`.
+1.  **Save the Script:** Save the Python code as a file named `main.py`.
 
 2.  **Run from Terminal:** Open your terminal or command prompt and navigate to the directory where you saved the script.
 
@@ -32,7 +32,7 @@ uv pip install Pillow
     **Basic Usage:** To process all PNGs in a folder and resize them to a square based on their largest dimension:
 
     ```bash
-    uv run resize_images.py /path/to/your/images
+    uv run main.py /path/to/your/images
     ```
 
     This will create a `resized_images` subfolder within your specified directory and save the output there.
@@ -40,7 +40,7 @@ uv pip install Pillow
     **Specify a Custom Size:** To process all PNGs in a folder and resize them to a fixed 500x500 canvas:
 
     ```bash
-    uv run resize_images.py /path/to/your/images --size 500
+    uv run main.py /path/to/your/images --size 500
     ```
 
 ### Example
@@ -57,7 +57,7 @@ my_photos/
 Running the script with the basic command:
 
 ```bash
-uv run resize_images.py my_photos
+uv run main.py my_photos
 ```
 
 The script will process each file and save the output in `my_photos/resized_images/`:

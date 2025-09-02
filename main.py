@@ -2,6 +2,7 @@ import argparse
 from PIL import Image
 import os
 
+
 def resize_and_pad_image(input_path: str, output_path: str, target_size: int = None):
     """
     Crops any transparent padding, then resizes a PNG image to fit within a square
@@ -24,14 +25,16 @@ def resize_and_pad_image(input_path: str, output_path: str, target_size: int = N
             # The getbbox() method returns a tuple (left, top, right, bottom)
             # of the bounding box of the non-zero pixels in the image.
             bbox = img.getbbox()
-            
+
             # If the image is not completely transparent, proceed
             if bbox:
                 # Crop the image to the bounding box to remove transparent padding
                 cropped_img = img.crop(bbox)
             else:
                 # If the image is entirely transparent, skip cropping
-                print(f"Warning: Image '{os.path.basename(input_path)}' is entirely transparent and will not be processed.")
+                print(
+                    f"Warning: Image '{os.path.basename(input_path)}' is entirely transparent and will not be processed."
+                )
                 return
 
             # Step 3: Determine the target canvas size
@@ -40,17 +43,21 @@ def resize_and_pad_image(input_path: str, output_path: str, target_size: int = N
                 target_dimension = max(cropped_img.size)
             else:
                 target_dimension = target_size
-            
+
             target_size_tuple = (target_dimension, target_dimension)
 
             # Step 4: Calculate new dimensions to fit the cropped image within the target size
             original_width, original_height = cropped_img.size
-            scale = min(target_dimension / original_width, target_dimension / original_height)
+            scale = min(
+                target_dimension / original_width, target_dimension / original_height
+            )
             new_width = int(original_width * scale)
             new_height = int(original_height * scale)
-            
+
             # Step 5: Resize the cropped image
-            resized_img = cropped_img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            resized_img = cropped_img.resize(
+                (new_width, new_height), Image.Resampling.LANCZOS
+            )
 
             # Step 6: Create a new, blank canvas with a transparent background
             new_img = Image.new("RGBA", target_size_tuple, (255, 255, 255, 0))
@@ -64,8 +71,10 @@ def resize_and_pad_image(input_path: str, output_path: str, target_size: int = N
 
             # Step 9: Save the final image
             new_img.save(output_path, "PNG")
-            
-            print(f"Image resized to {target_dimension}x{target_dimension} and padded. Saved to: {output_path}")
+
+            print(
+                f"Image resized to {target_dimension}x{target_dimension} and padded. Saved to: {output_path}"
+            )
 
     except FileNotFoundError:
         print(f"Error: The file at '{input_path}' was not found.")
@@ -85,31 +94,39 @@ def process_folder(input_folder: str, target_size: int = None):
                                      cropped image is used.
     """
     # Create the output directory if it doesn't exist
-    output_folder = os.path.join(input_folder, 'resized_images')
+    output_folder = os.path.join(input_folder, "resized_images")
     os.makedirs(output_folder, exist_ok=True)
 
     # List all files in the input folder
     for filename in os.listdir(input_folder):
-        if filename.lower().endswith('.png'):
+        if filename.lower().endswith(".png"):
             input_path = os.path.join(input_folder, filename)
             output_path = os.path.join(output_folder, filename)
-            
+
             print(f"Processing '{filename}'...")
             # Pass the target_size argument
             resize_and_pad_image(input_path, output_path, target_size)
-            
+
     print("\nAll PNG images have been processed.")
 
 
 if __name__ == "__main__":
     # Set up the command-line argument parser
-    parser = argparse.ArgumentParser(description="Resize and pad all PNG images in a folder to a square canvas.")
-    parser.add_argument("input_folder", help="Path to the folder containing the PNG images.")
-    parser.add_argument("--size", type=int, default=None,
-                        help="Optional: The side length for the square canvas. If not provided, the script will use the largest dimension of each image as the target size.")
-    
+    parser = argparse.ArgumentParser(
+        description="Resize and pad all PNG images in a folder to a square canvas."
+    )
+    parser.add_argument(
+        "input_folder", help="Path to the folder containing the PNG images."
+    )
+    parser.add_argument(
+        "--size",
+        type=int,
+        default=None,
+        help="Optional: The side length for the square canvas. If not provided, the script will use the largest dimension of each image as the target size.",
+    )
+
     args = parser.parse_args()
-    
+
     # Check if the input path is a valid directory
     if not os.path.isdir(args.input_folder):
         print(f"Error: The input path '{args.input_folder}' is not a valid directory.")
